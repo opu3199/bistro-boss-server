@@ -27,6 +27,7 @@ async function run() {
 
     const menucollection = client.db("Bistroboss").collection("menu")
     const reviwecollection = client.db("Bistroboss").collection("reviwe")
+    const cartcollection = client.db("Bistroboss").collection("cart")
     
     app.get('/menu',async(req,res)=>{
         const result=await menucollection.find().toArray()
@@ -35,6 +36,21 @@ async function run() {
     app.get('/reviwe',async(req,res)=>{
         const result=await reviwecollection.find().toArray()
         res.send(result)
+    })
+
+    //cart collection
+
+    app.post('/cart',async(req,res)=>{
+      const cartitem=req.body;
+      const result=await cartcollection.insertOne(cartitem)
+      res.send(result)
+    })
+
+    app.get('/cart',async(req,res)=>{
+      const email=req.query.email
+      const query={email:email}
+      const result=await cartcollection.find(query).toArray()
+      res.send(result)
     })
 
 
