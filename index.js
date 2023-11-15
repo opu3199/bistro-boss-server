@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(cors())
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${ process.env.USER_DATA}:${ process.env.USER_PASS}@cluster0.nhy8bre.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -28,7 +28,15 @@ async function run() {
     const menucollection = client.db("Bistroboss").collection("menu")
     const reviwecollection = client.db("Bistroboss").collection("reviwe")
     const cartcollection = client.db("Bistroboss").collection("cart")
+    const usercollection = client.db("Bistroboss").collection("user")
     
+    
+
+    app.post('/user',async(req,res)=>{
+      const user=req.body
+      const result=await usercollection.insertOne(user)
+      res.send(result)
+    })
     app.get('/menu',async(req,res)=>{
         const result=await menucollection.find().toArray()
         res.send(result)
@@ -51,6 +59,16 @@ async function run() {
       const query={email:email}
       const result=await cartcollection.find(query).toArray()
       res.send(result)
+    })
+
+    //delete
+    app.delete('/cart/:id',async(req,res)=>{
+      const id =req.params.id
+      const query={_id:new ObjectId(id)}
+      const result=await cartcollection.deleteOne(query)
+      res.send(result)
+
+
     })
 
 
