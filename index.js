@@ -114,6 +114,50 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/menu/:id',async(req,res)=>{
+      const id =req.params.id
+      const query={_id:new ObjectId(id)}
+      const result=await menucollection.findOne(query)
+      res.send(result)
+    })
+
+    app.patch('/menu/:id',async(req,res)=>{
+      const item =req.body
+      const id = req.params.id
+      const filter={_id:new ObjectId(id)}
+      const upadtedoc={
+        $set:{
+          name:item.name,
+          category:item.category,
+          price:item.price,
+          recipe:item.recipe,
+          image:item.image
+
+        }
+      }
+      const result =await menucollection.updateOne(filter,upadtedoc)
+      res.send(result)
+    })
+
+
+//add item into menu
+    app.post('/menu',async(req,res)=>{
+      const menuitem=req.body;
+      const result=await menucollection.insertOne(menuitem)
+      res.send(result)
+    })
+
+   
+
+    app.delete('/menu/:id',async(req,res)=>{
+      const id =req.params.id
+      const query={_id:new ObjectId(id)}
+      const result=await menucollection.deleteOne(query)
+      res.send(result)
+    })
+
+
+
     app.get('/reviwe',async(req,res)=>{
         const result=await reviwecollection.find().toArray()
         res.send(result)
@@ -140,8 +184,6 @@ async function run() {
       const query={_id:new ObjectId(id)}
       const result=await cartcollection.deleteOne(query)
       res.send(result)
-
-
     })
 
 
